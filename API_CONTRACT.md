@@ -1,7 +1,6 @@
 # API Contract - Website Analyst
 
-Contratto tra frontend (3 stati) e backend crawler. Reimplementa ciò che nel prototipo
-è simulato da `startDownload` / `buildResult`. Base path suggerito: `/api`.
+Contratto tra frontend (3 stati) e backend crawler. Reimplementa ciò che nel prototipo è simulato da `startDownload` / `buildResult`. Base path suggerito: `/api`.
 
 ## 1. Avvio job
 `POST /api/jobs`
@@ -17,9 +16,7 @@ Request (JSON):
   "headful": false
 }
 ```
-Note: `delay_sec` arriva dalla UI con virgola decimale ("1,0") → convertire in float.
-Validare `url` (http/https, host risolvibile, no IP privati se non consentito),
-`max_pages` 1..300, `folder` sanitizzato (no `/`, `..`).
+Note: `delay_sec` arriva dalla UI con virgola decimale ("1,0") → convertire in float. Validare `url` (http/https, host risolvibile, no IP privati se non consentito), `max_pages` 1..300, `folder` sanitizzato (no `/`, `..`).
 
 Response `202`:
 ```json
@@ -44,8 +41,7 @@ data: { "job_id": "a1b2c3" }      // il client poi chiama GET /result
 event: error
 data: { "message": "timeout sul sito" }
 ```
-`total_pages` può aggiornarsi durante il crawl (scoperta link). `log` alimenta la console
-scura. In alternativa a SSE: polling `GET /api/jobs/{job_id}` che ritorna lo stesso stato.
+`total_pages` può aggiornarsi durante il crawl (scoperta link). `log` alimenta la console scura. In alternativa a SSE: polling `GET /api/jobs/{job_id}` che ritorna lo stesso stato.
 
 ## 3. Riepilogo risultato
 `GET /api/jobs/{job_id}/result`
@@ -84,28 +80,17 @@ Struttura cartella prodotta dal backend (deve combaciare con l'albero):
     <nome>.pdf
 ```
 
-Nota di correzione (15/07/2026, M1): lo schema sopra e' l'esempio illustrativo originale
-del brief, ma non corrisponde ai nomi reali prodotti da `scarica_sito_webcopy.py` (vedi
-`STACK.md`). L'implementazione di `/result` cammina la cartella di output effettiva e vi
-si trovano invece: `www.<dominio>/` (mirror con `webcopy-origin.txt`), `testi/`,
-`html_leggibile/`, `TESTI_COMPLETI.txt`, `conteggio.csv`, opzionale `_raw_html/`. Non
-esistono `_report.json`, `sitemap.txt` ne' una cartella `pdf/` separata (i PDF finiscono
-nel mirror, nel loro percorso originale). La forma del JSON (`type`/`path`/`depth`/`bytes`/
-`children`) resta quella qui sopra; sono solo i nomi di file/cartella reali a differire
-dall'esempio.
+Nota di correzione (15/07/2026, M1): lo schema sopra e' l'esempio illustrativo originale del brief, ma non corrisponde ai nomi reali prodotti da `scarica_sito_webcopy.py` (vedi `STACK.md`). L'implementazione di `/result` cammina la cartella di output effettiva e vi si trovano invece: `www.<dominio>/` (mirror con `webcopy-origin.txt`), `testi/`, `html_leggibile/`, `TESTI_COMPLETI.txt`, `conteggio.csv`, opzionale `_raw_html/`. Non esistono `_report.json`, `sitemap.txt` ne' una cartella `pdf/` separata (i PDF finiscono nel mirror, nel loro percorso originale). La forma del JSON (`type`/`path`/`depth`/`bytes`/ `children`) resta quella qui sopra; sono solo i nomi di file/cartella reali a differire dall'esempio.
 
 ## 4. Download ZIP
 `GET /api/jobs/{job_id}/download`  → `application/zip`
 
-Header: `Content-Disposition: attachment; filename="{folder}.zip"`.
-Lo zip contiene la cartella `{folder}/` con tutti i file. Il frontend punta il link/bottone
-"Scarica {folder}.zip" a questo endpoint (o crea un `<a download>` verso di esso).
+Header: `Content-Disposition: attachment; filename="{folder}.zip"`. Lo zip contiene la cartella `{folder}/` con tutti i file. Il frontend punta il link/bottone "Scarica {folder}.zip" a questo endpoint (o crea un `<a download>` verso di esso).
 
 ## Comportamento crawler (backend)
 - Coda dei link interni allo stesso host, dedup, rispetto di `robots.txt`.
 - `delay_sec` di attesa tra le richieste; stop a `max_pages`.
 - Estrazione testo: rimuovere nav/script/style, salvare testo leggibile + metadati.
-- `headful=true`: browser reale via Playwright sotto `xvfb` (siti anti-bot); altrimenti
-  fetch HTTP semplice.
+- `headful=true`: browser reale via Playwright sotto `xvfb` (siti anti-bot); altrimenti fetch HTTP semplice.
 - `pdf=true`: scaricare i file `.pdf` linkati nella cartella `pdf/`.
 - Pulizia job/zip vecchi (TTL) per non riempire il disco della VM.

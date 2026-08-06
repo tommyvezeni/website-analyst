@@ -1,12 +1,8 @@
 # Estrattore testi da siti web — pacchetto per VM Linux
 
-Strumento Python che scarica un sito ed estrae i testi (pagine + PDF) per l'analisi
-del contenuto (conteggio parole). Usa Chromium headless via Playwright, quindi
-**esegue il JavaScript** e funziona anche sui siti moderni (React, Salesforce,
-site-builder) dove wget/curl/Cyotek WebCopy restituiscono pagine vuote.
+Strumento Python che scarica un sito ed estrae i testi (pagine + PDF) per l'analisi del contenuto (conteggio parole). Usa Chromium headless via Playwright, quindi **esegue il JavaScript** e funziona anche sui siti moderni (React, Salesforce, site-builder) dove wget/curl/Cyotek WebCopy restituiscono pagine vuote.
 
-È lo stesso strumento già usato su Windows via PowerShell (es. per arcafondi.it),
-qui impacchettato per essere installato ed eseguito su una VM Linux.
+È lo stesso strumento già usato su Windows via PowerShell (es. per arcafondi.it), qui impacchettato per essere installato ed eseguito su una VM Linux.
 
 ---
 
@@ -79,11 +75,9 @@ Opzioni principali (vedi `guida/` per il dettaglio completo):
 
 ### Nota importante su `--headful` in una VM senza schermo
 
-Su Linux server (headless, nessun monitor) di default lo script gira in modalità
-**headless**: va benissimo per la maggior parte dei siti.
+Su Linux server (headless, nessun monitor) di default lo script gira in modalità **headless**: va benissimo per la maggior parte dei siti.
 
-Alcuni siti bloccano i browser headless. In quel caso serve un browser "visibile"
-ma dentro uno schermo virtuale (Xvfb):
+Alcuni siti bloccano i browser headless. In quel caso serve un browser "visibile" ma dentro uno schermo virtuale (Xvfb):
 
 ```bash
 sudo apt install -y xvfb
@@ -108,17 +102,11 @@ Dentro la cartella `--out`:
 
 ## 5. Limite noto e nota OCR
 
-- **PDF scansionati**: l'estrazione testo usa `pdfminer` (solo testo digitale). I PDF
-  che sono immagini scansionate escono **vuoti** (0 parole). Se ti serve gestirli,
-  vedi `CLAUDE.md` → sezione "OCR / Docling": è l'unico upgrade davvero utile da
-  valutare, integrando Docling per l'OCR.
-- Il mirror usa il percorso URL: pagine che differiscono solo per query si
-  sovrascrivono nel mirror, ma nei `testi/` e nel conteggio sono tutte conservate.
+- **PDF scansionati**: l'estrazione testo usa `pdfminer` (solo testo digitale). I PDF che sono immagini scansionate escono **vuoti** (0 parole). Se ti serve gestirli, vedi `CLAUDE.md` → sezione "OCR / Docling": è l'unico upgrade davvero utile da valutare, integrando Docling per l'OCR.
+- Il mirror usa il percorso URL: pagine che differiscono solo per query si sovrascrivono nel mirror, ma nei `testi/` e nel conteggio sono tutte conservate.
 
 ---
 
 ## 6. Frontend LAN (backend + pagina web)
 
-In `backend_esempio/` e `frontend_esempio/` trovi uno **scheletro minimale** da cui
-partire per servire lo strumento in LAN. Vedi `CLAUDE.md` per l'architettura
-consigliata e i passi (systemd, bind sulla rete interna, ecc.).
+In `backend_esempio/` e `frontend_esempio/` trovi uno **scheletro minimale** da cui partire per servire lo strumento in LAN. Vedi `CLAUDE.md` per l'architettura consigliata e i passi (systemd, bind sulla rete interna, ecc.).
