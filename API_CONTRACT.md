@@ -16,7 +16,7 @@ Request (JSON):
   "headful": false
 }
 ```
-Note: `delay_sec` arriva dalla UI con virgola decimale ("1,0") → convertire in float. Validare `url` (http/https, host risolvibile, no IP privati se non consentito), `max_pages` 1..300, `folder` sanitizzato (no `/`, `..`).
+Note: `delay_sec` arriva dalla UI con virgola decimale ("1,0") → convertire in float. Validare `url` (http/https, host risolvibile, no IP privati se non consentito), `max_pages` 1..1000, `folder` sanitizzato (no `/`, `..`).
 
 Response `202`:
 ```json

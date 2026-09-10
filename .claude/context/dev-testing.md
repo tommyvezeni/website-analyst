@@ -29,7 +29,7 @@ Eseguita il 15/07/2026 senza Playwright installato: `backend_esempio/app.py` ver
 | Caso | Comportamento atteso |
 |---|---|
 | `delay_sec` con virgola decimale dalla UI ("1,0") | Convertito in float lato backend |
-| `max_pages` fuori range 1..300 | Errore di validazione, job non avviato |
+| `max_pages` fuori range 1..1000 | Errore di validazione, job non avviato |
 | `url` non http/https o host privato non consentito | `400` con messaggio esplicito |
 | PDF scansionato (immagine) | Testo vuoto con `pdfminer` (limite noto, vedi roadmap OCR) |
 | Sito con crawl falllito/timeout | Evento `error` SSE, frontend mostra "Riprova" |

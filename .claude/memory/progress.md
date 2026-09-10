@@ -1,5 +1,25 @@
 # Work-log
 
+## 2026-09-09 — Tetto max_pages alzato da 300 a 1000
+
+Richiesta dell'utente: 300 pagine non bastavano per i siti particolarmente grandi. Alzato
+il tetto massimo a 1000 in `backend_esempio/app.py` (`MAX_PAGES_LIMIT`, unico punto reale
+di enforcement: lo script CLI `scarica_sito_webcopy.py` non ha mai avuto un tetto proprio,
+usa direttamente `args.max`). Il valore precompilato di default resta 300 (scelta esplicita
+dell'utente): sia il campo del form (`value="300"`, solo l'attributo `max` HTML alzato a
+1000) sia il default del modello `CrawlRequest` restano invariati, cosi' un crawl su un
+sito piccolo non tenta per default fino a 1000 pagine. Aggiornati i riferimenti al vecchio
+tetto 1..300 in `API_CONTRACT.md`, `dev-testing.md`, `design-and-security.md`; non toccati
+`README.md`/`guida/Guida_estrazione_testi_sito.md`, che descrivono solo il default di
+`--max` da CLI (300, invariato, nessun tetto lato script).
+
+Verificato con `TestClient` (1001 rifiutato, 1000/500/300 accettati, 0 rifiutato) e poi sul
+servizio di produzione reale dopo `sudo systemctl restart estrattore` (il processo aveva
+gia' in memoria il vecchio limite): job con `max_pages=1000` accettato e completato con
+successo su `example.com`. Durante la verifica in locale un job di test e' rimasto
+orfano (lo script di verifica e' terminato prima che il crawl finisse): individuato e
+terminato a mano, nessun residuo.
+
 ## 2026-07-23 — M3: servizio di produzione + hostname mDNS
 
 Creato l'utente di servizio dedicato `estrattore` (`useradd -r -s /usr/sbin/nologin -G intrawelt estrattore`): membro supplementare del gruppo `intrawelt` per ereditare i permessi di gruppo gia' presenti su home/Scrivania/repo (750/755/775), invece di allargare i permessi ad "altri". Due permessi puntuali mancanti: `chmod g+rx /home/intrawelt/.cache` (la home e' 750: senza questo `estrattore` non avrebbe raggiunto `ms-playwright/`, gia' 775 ma irraggiungibile per via del genitore) e `chmod g+w /srv/output` (il gruppo aveva solo lettura). Riga fstab della share CIFS riallineata da `uid=intrawelt,gid=intrawelt` a `uid=estrattore,gid=estrattore` (mount.cifs risolve i nomi da solo, non serve conoscere gli id numerici) e rimontata: verificato che il mount mostra `uid=997,gid=984`, combacianti con `id estrattore`. Aggiornato `estrattore.service` con `ARCHIVE_BASE` e `PLAYWRIGHT_BROWSERS_PATH` espliciti (senza quest'ultimo, `estrattore` non avrebbe trovato il Chromium scaricato nella cache di `intrawelt`), installato in `/etc/systemd/system/`, abilitato e avviato.
