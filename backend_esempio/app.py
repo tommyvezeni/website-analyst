@@ -53,7 +53,7 @@ logging.basicConfig(
 logger = logging.getLogger("estrattore")
 
 # --- limiti e pattern --------------------------------------------------------
-MAX_PAGES_LIMIT = 1000
+MAX_PAGES_LIMIT = 2000
 JOB_TTL_HOURS = 48
 PROGRESS_RE = re.compile(r"^\[(\d+)/(\d+)\]")  # riga di avanzamento reale dello script
 

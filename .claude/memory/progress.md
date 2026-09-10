@@ -1,5 +1,21 @@
 # Work-log
 
+## 2026-09-10 — Tetto max_pages alzato ulteriormente da 1000 a 2000
+
+Stessa richiesta della sessione precedente, portata oltre: 1000 non bastava ancora per i
+siti piu' grandi. Stessi tre punti toccati (`MAX_PAGES_LIMIT` in `backend_esempio/app.py`,
+attributo `max` dell'input nel form, riferimenti 1..N in `API_CONTRACT.md`/`dev-testing.md`/
+`design-and-security.md`); default del form invariato a 300.
+
+Durante il riavvio del servizio emerso un problema operativo degno di nota: il primo
+tentativo di `sudo systemctl restart estrattore` non ha avuto effetto (il processo e'
+rimasto lo stesso PID, avviato prima della modifica del codice), individuato confrontando
+`systemctl show estrattore -p ExecMainStartTimestamp` con la data di modifica del file —
+tecnica di verifica utile da riusare ogni volta che un riavvio sembra non aver avuto
+effetto. Al secondo tentativo il riavvio e' andato a buon fine (nuovo PID, timestamp
+successivo alla modifica). Verificato con un job reale (`max_pages=2000` accettato e
+completato con successo, `2001` rifiutato) contro il servizio di produzione.
+
 ## 2026-09-09 — Tetto max_pages alzato da 300 a 1000
 
 Richiesta dell'utente: 300 pagine non bastavano per i siti particolarmente grandi. Alzato

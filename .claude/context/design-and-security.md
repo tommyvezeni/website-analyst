@@ -21,7 +21,7 @@ SSRF: validare `url` (solo schema http/https, host risolvibile), bloccare host/I
 
 Path traversal sul parametro `folder`: sanitizzare rifiutando `/` e `..`.
 
-Limiti di risorse: `max_pages` vincolato 1..1000 (alzato da 300 il 09/09/2026 per i siti particolarmente grandi), un job di crawl alla volta (o piccola coda) perche' ogni run apre un Chromium reale: troppi crawl paralleli su 6 vCPU degradano la VM.
+Limiti di risorse: `max_pages` vincolato 1..2000 (alzato da 300 a 1000 il 09/09/2026, poi a 2000 il 10/09/2026, per i siti particolarmente grandi), un job di crawl alla volta (o piccola coda) perche' ogni run apre un Chromium reale: troppi crawl paralleli su 6 vCPU degradano la VM.
 
 Pulizia: TTL su job/zip vecchi per non saturare il disco (disco dati 96G su `/srv`, separato dal disco di sistema da 32G).
 
